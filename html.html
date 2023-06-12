@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PDF Upload</title>
+</head>
+<body>
+  <h2>Upload a PDF</h2>
+  <form id="uploadForm">
+    <input type="file" id="fileInput" accept=".pdf">
+    <button type="submit">Upload</button>
+  </form>
+
+  <script>
+    const uploadForm = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
+
+    uploadForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const file = fileInput.files[0];
+      if (!file) {
+        console.log('No file selected.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('pdfFile', file);
+
+      try {
+        const response = await fetch('/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          const text = await response.text();
+          console.log('Extracted Text:', text);
+          // Do further processing with the extracted text
+        } else {
+          console.error('File upload failed:', response.status);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+</html>
